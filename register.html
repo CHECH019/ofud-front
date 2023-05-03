@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Student Registration Form</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="register-styles.css">
+</head>
+
+<body>
+    <div class="form-container">
+        <form class="registration-form">
+            <h1>Student Registration</h1>
+            <div class="input-group">
+                <label for="codigo">Codigo</label>
+                <input type="text" id="codigo" name="codigo" required>
+            </div>
+            <div class="input-group">
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" name="nombre" required>
+            </div>
+            <div class="input-group">
+                <label for="apellido">Apellido</label>
+                <input type="text" id="apellido" name="apellido" required>
+            </div>
+            <div class="input-group">
+                <label for="celular">Celular</label>
+                <input type="text" id="celular" name="celular" required>
+            </div>
+            <div class="input-group">
+                <label for="correo_institucional">Correo Institucional</label>
+                <input type="email" id="correo_institucional" name="correo_institucional" required>
+            </div>
+            <div class="input-group">
+                <label for="correo_personal">Correo Personal</label>
+                <input type="email" id="correo_personal" name="correo_personal">
+            </div>
+            <div class="input-group">
+                <label for="documento">Documento</label>
+                <input type="text" id="documento" name="documento" required>
+            </div>
+            <div class="input-group">
+                <label for="nacimiento">Nacimiento</label>
+                <input type="date" id="nacimiento" name="nacimiento" required>
+            </div>
+            <div class="input-group">
+                <label for="tipo">Tipo</label>
+                <select id="tipo" name="tipo" required>
+                    <option value="pr">Pregrado</option>
+                    <option value="po">Posgrado</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <button type="submit">Registrar</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="register-script.js"></script>
+</body>
+
+</html>
