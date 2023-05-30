@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página con Pestañas</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h2 id="name"></h2>
+    <input type="datetime-local" name="datetime" id="datetime">
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-button active" data-tab="calendario">Calendario</button>
+            <button class="tab-button" data-tab="seleccion">Selección</button>
+            <button class="tab-button" data-tab="reporte-asistencia">Reporte Asistencia</button>
+            <button class="tab-button" data-tab="liquidacion-estudiantes">Liquidación Estudiantes</button>
+        </div>
+        <div class="tab-content">
+            <div class="tab-pane active" data-tab="calendario">
+                Contenido de la pestaña "Calendario"
+            </div>
+            <div class="tab-pane" data-tab="seleccion">
+                Contenido de la pestaña "Selección"
+            </div>
+            <div class="tab-pane" data-tab="reporte-asistencia">
+                Contenido de la pestaña "Reporte Asistencia"
+            </div>
+            <div class="tab-pane" data-tab="liquidacion-estudiantes">
+                Contenido de la pestaña "Liquidación Estudiantes"
+            </div>
+        </div>
+    </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
