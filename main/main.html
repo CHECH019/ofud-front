@@ -18,13 +18,70 @@
         </div>
         <div class="tab-content">
             <div class="tab-pane active" data-tab="calendario">
-                Contenido de la pestaña "Calendario"
+                <button class='boton_seleccion'>Crear calendario</button>
+                <div class="tab-content">
+                    <div class="tab-pane2 active" data-tab="calendario">
+                        <table id="tabla-calendario">
+                            <thead>
+                                <tr>
+                                    <th>Obra</th>
+                                    <th>Actividad</th>
+                                    <th>Fecha inicio</th>
+                                    <th>Fecha fin</th>
+                                    <th>Estado</th>
+                                    <th>Terminar</th>
+                                </tr>
+                            </thead>
+                            <tbody id="Cuerpo_calendario"> 
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                
             </div>
             <div class="tab-pane" data-tab="seleccion">
-                Contenido de la pestaña "Selección"
+                <button class="boton_seleccion">Seleccionar estudiantes</button>
+                <div class="tab-content">
+                    <div class="tab-pane2 active" data-tab="selección">
+                        <table id="tabla-seleccion">
+                            <thead>
+                                <tr>
+                                    <th>Codigo</th>
+                                    <th>Nombre</th>
+                                    <th>Apellido</th>
+                                    <th>Facultad</th>
+                                    <th>Proyecto</th>
+                                    <th>Instrumento</th>
+                                </tr>
+                            </thead>
+                            <tbody id="Cuerpo_selección"> 
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
             </div>
             <div class="tab-pane" data-tab="reporte-asistencia">
-                Contenido de la pestaña "Reporte Asistencia"
+                <div class="tab-content">
+                    <div class="tab-pane2 active" data-tab="asistencia">
+                        <table id="tabla-seleccion">
+                            <thead>
+                                <tr>
+                                    <th>Codigo</th>
+                                    <th>Nombre</th>
+                                    <th>Apellido</th>
+                                    <th>Facultad</th>
+                                    <th>Proyecto</th>
+                                    <th>Instrumento</th>
+                                </tr>
+                            </thead>
+                            <tbody id="Cuerpo_asistencia"> 
+                                <td><input type="checkbox" id="cbox" value="present"></td>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
             <div class="tab-pane" data-tab="liquidacion-estudiantes">
                 Contenido de la pestaña "Liquidación Estudiantes"

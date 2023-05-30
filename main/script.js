@@ -1,5 +1,5 @@
 const tabButtons = document.querySelectorAll('.tab-button');
-const tabContentPanes = document.querySelectorAll('.tab-content .tab-pane');
+const tabContentPanes = document.querySelectorAll('.tab-content .tab-pane, .tab-pane2');
 
 tabButtons.forEach(button => {
     button.addEventListener('click', () => {
@@ -20,9 +20,67 @@ tabButtons.forEach(button => {
 
 const nameElement = document.getElementById('name')
 nameElement.textContent = localStorage.getItem('name');
+/*Calendarios*/
+const listCalendarios = () => {
+    url='http://localhost:8082/ofud/api/v1/calendarios/';
+     fetch(url).then(response => response.json())
+     .then(data => {
+        let content= "";
+        data.forEach((calendario)=>{
+        content+=
+        `<tr>
+        <td>${calendario.titulo}</td>
+        <td>${calendario.tipoCal}</td>
+        <td>${calendario.fechaInicio}</td>
+        <td>${calendario.fechaFin}</td>
+        <td>${calendario.estado}</td>
+        <td><button id='consec=${calendario.consec}&idObra=${calendario.idObra}&idTipo=${calendario.idTipoCal}' class="Boton_terminar" onclick=>Terminar</button></td>
+        </tr>`
+     });
+     Cuerpo_calendario.innerHTML=content;
+     var Boton_Terminar = document.getElementsByClassName("Boton_terminar");
+     for (var i = 0; i < Boton_Terminar.length; i++) {
+        var id=Boton_Terminar[i].id;
+     // Acciones a realizar con cada elemento
+        Boton_Terminar[i].addEventListener('click', () => {
+            peticion_terminar(id)
+        })
+     };
+     })
+}
+/*Pone inactivo el calendaro*/
+function peticion_terminar(id){
+    console.log(id);
+    url=`http://localhost:8082/ofud/api/v1/calendarios/terminar?${id}`;
+    console.log(url);
+    fetch(url,{
+        method: 'PUT'
+    }).then(response => response.json());
+}
 
-
-window.addEventListener('load', () => {
+/*Selección*/
+/*const listSeleccion= async() => {
+    url='http://localhost:8082/ofud/api/v1/seleccion/';
+     fetch(url).then(response => response.json())
+     .then(data => {
+        let content= "";
+        data.forEach((estudiantes)=>{
+        content+=
+        `<tr>
+        <td>${estudiantes.codigo}</td>
+        <td>${estudiantes.nombre}</td>
+        <td>${estudiantes.apellido}</td>
+        <td>${estudiantes.facultad}</td>
+        <td>${estudiantes.proyecto}</td>
+        <td>${estudiantes.instrumento}</td>
+        </tr>`
+     });
+     Cuerpo_seleccion.innerHTML=content;
+     })
+}*/
+window.addEventListener('load', async() => {
+    listCalendarios();  
+    /*listSeleccion();*/
     const myDate = new Date(); // Aquí puedes reemplazarlo con tu propia fecha
 
     const year = myDate.getFullYear();
