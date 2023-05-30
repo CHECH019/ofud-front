@@ -1,10 +1,50 @@
 const tabButtons = document.querySelectorAll('.tab-button');
 const tabContentPanes = document.querySelectorAll('.tab-content .tab-pane, .tab-pane2');
 
-tabButtons.forEach(button => {
+async function tabButtonsFunction(){
+    let vali = await validacion_Calendario();
+    let vali2=true;
+    let vali3=true;
+    let vali4=true;
+    for( const button of tabButtons) {
+        if(button.classList.contains("calendario")){
+            if(!vali){
+                button.addEventListener('click', () => {
+                    alert('pestaña inhabilitada');
+                 });
+                console.log("NO SE CUMPLE LA CONDICION")
+            }else{
+                cambiar_boton(button);
+            }
+        }
+        if(button.classList.contains("seleccion")){
+            if(!vali2){
+                
+            }else{
+                cambiar_boton(button);
+            }
+        }
+        if(button.classList.contains("asistencia")){
+            if(!vali3){
+                
+            }else{
+                cambiar_boton(button);
+            }
+        }
+        if(button.classList.contains("liquidacion")){
+            if(!vali4){
+                
+            }else{
+                cambiar_boton(button);
+            }
+        }
+    }
+}
+tabButtonsFunction()
+function cambiar_boton(button){
     button.addEventListener('click', () => {
         const targetTab = button.dataset.tab;
-
+        
         tabButtons.forEach(button => {
             button.classList.remove('active');
         });
@@ -16,8 +56,19 @@ tabButtons.forEach(button => {
         button.classList.add('active');
         document.querySelector(`.tab-content .tab-pane[data-tab="${targetTab}"]`).classList.add('active');
     });
-});
 
+}
+async function validacion_Calendario(){
+    var estado
+    url = 'http://localhost:8082/ofud/api/v1/calendarios/validar';
+    await fetch (url).then(response=>response.json())
+    .then(data=>{
+        estado=data.state;
+    }).catch(error => {
+        console.log('Error en la solicitud:', error);
+    });
+    return estado;
+}
 const nameElement = document.getElementById('name')
 nameElement.textContent = localStorage.getItem('name');
 /*Calendarios*/
@@ -41,6 +92,7 @@ const listCalendarios = () => {
 
             Cuerpo_calendario.innerHTML = content;
             const Boton_Terminar = document.querySelectorAll('.Boton_terminar');
+
             Boton_Terminar.forEach(button=>{
                 var id = button.id;
                 button.addEventListener('click', () => {
@@ -50,10 +102,11 @@ const listCalendarios = () => {
         })
 }
 /*Pone inactivo el calendaro*/
-function peticion_terminar(id){
-    url=`http://localhost:8082/ofud/api/v1/calendarios/terminar?${id}`;
-    console.log(url)
-    fetch(url,{
+function peticion_terminar(id) {
+    console.log(id);
+    url = `http://localhost:8082/ofud/api/v1/calendarios/terminar?${id}`;
+    console.log(url);
+    fetch(url, {
         method: 'PUT'
     }).then(response => {
         if (response.ok) {
