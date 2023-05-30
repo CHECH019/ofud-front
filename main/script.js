@@ -34,28 +34,36 @@ const listCalendarios = () => {
         <td>${calendario.fechaInicio}</td>
         <td>${calendario.fechaFin}</td>
         <td>${calendario.estado}</td>
-        <td><button id='consec=${calendario.consec}&idObra=${calendario.idObra}&idTipo=${calendario.idTipoCal}' class="Boton_terminar" onclick=>Terminar</button></td>
+        <td><button id='consec=${calendario.consec}&idObra=${calendario.idObra}&idTipo=${calendario.idTipoCal}' class="Boton_terminar" >Terminar</button></td>
         </tr>`
      });
      Cuerpo_calendario.innerHTML=content;
      var Boton_Terminar = document.getElementsByClassName("Boton_terminar");
      for (var i = 0; i < Boton_Terminar.length; i++) {
-        var id=Boton_Terminar[i].id;
      // Acciones a realizar con cada elemento
         Boton_Terminar[i].addEventListener('click', () => {
-            peticion_terminar(id)
+            console.log(this.id)
+            peticion_terminar(Boton_Terminar[i].id)
         })
      };
      })
 }
 /*Pone inactivo el calendaro*/
 function peticion_terminar(id){
-    console.log(id);
     url=`http://localhost:8082/ofud/api/v1/calendarios/terminar?${id}`;
-    console.log(url);
+    console.log(url)
     fetch(url,{
         method: 'PUT'
-    }).then(response => response.json());
+    }).then(response => {
+        if (response.ok) {
+            console.log('Request completado exitosamente.');
+        } else {
+            console.log('Error en la solicitud.');
+        }
+    })
+    .catch(error => {
+        console.log('Error en la solicitud:', error);
+    });
 }
 
 /*Selección*/
@@ -77,7 +85,30 @@ function peticion_terminar(id){
      });
      Cuerpo_seleccion.innerHTML=content;
      })
-}*/
+}
+
+Asistencia
+const listAsistencia= async() => {
+    url='http://localhost:8082/ofud/api/v1/Asistencia/';
+     fetch(url).then(response => response.json())
+     .then(data => {
+        let content= "";
+        data.forEach((Asistencia)=>{
+        content+=
+        `<tr>
+        <td>${Asistencia.codigo}</td>
+        <td>${Asistencia.nombre}</td>
+        <td>${Asistencia.apellido}</td>
+        <td>${Asistencia.facultad}</td>
+        <td>${Asistencia.proyecto}</td>
+        <td>${Asistencia.instrumento}</td>
+        </tr>`
+     });
+     Cuerpo_asistencia.innerHTML=content;
+     })
+}
+
+*/
 window.addEventListener('load', async() => {
     listCalendarios();  
     /*listSeleccion();*/
