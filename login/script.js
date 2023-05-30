@@ -4,7 +4,7 @@ loginForm.addEventListener('submit', (event) => {
     event.preventDefault();
     console.log("HOLA")
 
-    const url = 'http://localhost:8082/ofud/api/v1/empleados/coord'
+    const url = 'http://localhost:8080/ofud/api/v1/empleados/coord'
     const email = document.querySelector('#email').value;
     const data = {
         email
