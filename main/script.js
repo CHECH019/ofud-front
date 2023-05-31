@@ -1,9 +1,11 @@
+const url_b="http://localhost:8082/ofud/api/v1";
+
 const tabButtons = document.querySelectorAll('.tab-button');
 const tabContentPanes = document.querySelectorAll('.tab-content .tab-pane, .tab-pane2');
 
 async function tabButtonsFunction(){
     let vali = await validacion_Calendario();
-    let vali2=true;
+    let vali2= await validacion_seleccion();
     let vali3=true;
     let vali4=true;
     for( const button of tabButtons) {
@@ -12,26 +14,32 @@ async function tabButtonsFunction(){
                 button.addEventListener('click', () => {
                     alert('pestaña inhabilitada');
                  });
-                console.log("NO SE CUMPLE LA CONDICION")
             }else{
                 cambiar_boton(button);
             }
         }
         if(button.classList.contains("seleccion")){
             if(!vali2){
-                
+                button.addEventListener('click', () => {
+                    alert('pestaña inhabilitada');
+                 });      
             }else{
                 cambiar_boton(button);
             }
         }
         if(button.classList.contains("asistencia")){
             if(!vali3){
-                
+                button.addEventListener('click', () => {
+                    alert('pestaña inhabilitada');
+                 });    
             }else{
                 cambiar_boton(button);
             }
         }
         if(button.classList.contains("liquidacion")){
+            button.addEventListener('click', () => {
+                alert('pestaña inhabilitada');
+             });    
             if(!vali4){
                 
             }else{
@@ -40,7 +48,7 @@ async function tabButtonsFunction(){
         }
     }
 }
-tabButtonsFunction()
+
 function cambiar_boton(button){
     button.addEventListener('click', () => {
         const targetTab = button.dataset.tab;
@@ -58,9 +66,10 @@ function cambiar_boton(button){
     });
 
 }
+/*Validar calendario*/ 
 async function validacion_Calendario(){
     var estado
-    url = 'http://localhost:8082/ofud/api/v1/calendarios/validar';
+    url = url_b+'/calendarios/validar';
     await fetch (url).then(response=>response.json())
     .then(data=>{
         estado=data.state;
@@ -69,11 +78,53 @@ async function validacion_Calendario(){
     });
     return estado;
 }
-const nameElement = document.getElementById('name')
-nameElement.textContent = localStorage.getItem('name');
-/*Calendarios*/
+/*Validar seleccion*/
+async function validacion_seleccion(){
+    var estado
+    url = url_b+'/calendarios/estadoplaneacion';
+    await fetch (url).then(response=>response.json())
+    .then(data=>{
+        estado=data.state;
+    }).catch(error => {
+        console.log('Error en la solicitud:', error);
+    });
+    return estado;
+}
+/*Validar asistencia*/
+async function validacion_asistencia(){
+    var estado
+    url = url_b+'/calendarios/estadoplaneacion';
+    await fetch (url).then(response=>response.json())
+    .then(data=>{
+        estado=data.state;
+    }).catch(error => {
+        console.log('Error en la solicitud:', error);
+    });
+    return estado;
+}
+
+
+/*Pone inactivo el calendaro*/
+function peticion_terminar(id) {
+    console.log(id);
+    url = url_b`/calendarios/terminar?${id}`;
+    console.log(url);
+    fetch(url, {
+        method: 'PUT'
+    }).then(response => {
+        if (response.ok) {
+            console.log('Request completado exitosamente.');
+        } else {
+            console.log('Error en la solicitud.');
+        }
+    })
+        .catch(error => {
+            console.log('Error en la solicitud:', error);
+        });
+}
+/*Lista Calendarios*/
 const listCalendarios = () => {
-    url = 'http://localhost:8082/ofud/api/v1/calendarios/';
+    url = url_b+'/calendarios/';
     fetch(url).then(response => response.json())
         .then(data => {
             let content = "";
@@ -101,29 +152,10 @@ const listCalendarios = () => {
             });            
         })
 }
-/*Pone inactivo el calendaro*/
-function peticion_terminar(id) {
-    console.log(id);
-    url = `http://localhost:8082/ofud/api/v1/calendarios/terminar?${id}`;
-    console.log(url);
-    fetch(url, {
-        method: 'PUT'
-    }).then(response => {
-        if (response.ok) {
-            console.log('Request completado exitosamente.');
-        } else {
-            console.log('Error en la solicitud.');
-        }
-    })
-        .catch(error => {
-            console.log('Error en la solicitud:', error);
-        });
-}
-
-/*Selección*/
-/*const listSeleccion= async() => {
-    url='http://localhost:8082/ofud/api/v1/seleccion/';
-     fetch(url).then(response => response.json())
+/*Lista Selección*/
+const listSeleccion= async() => {
+    url=url_b+'/estudiantes/seleccionar';
+     await fetch(url).then(response => response.json())
      .then(data => {
         let content= "";
         data.forEach((estudiantes)=>{
@@ -139,22 +171,28 @@ function peticion_terminar(id) {
      });
      Cuerpo_seleccion.innerHTML=content;
      })
-}*/
-window.addEventListener('load', async () => {
-    listCalendarios();
-    /*listSeleccion();*/
-    const myDate = new Date(); // Aquí puedes reemplazarlo con tu propia fecha
+}
+function init(){
+    const nameElement = document.getElementById('name')
+    nameElement.textContent = localStorage.getItem('name');
+    tabButtonsFunction()
+    window.addEventListener('load', async () => {
+        listCalendarios();
+        listSeleccion();
+        const myDate = new Date(); // Aquí puedes reemplazarlo con tu propia fecha
 
-    const year = myDate.getFullYear();
-    const month = String(myDate.getMonth() + 1).padStart(2, '0');
-    const day = String(myDate.getDate()).padStart(2, '0');
-    const hours = String(myDate.getHours()).padStart(2, '0');
-    const minutes = String(myDate.getMinutes()).padStart(2, '0');
+        const year = myDate.getFullYear();
+        const month = String(myDate.getMonth() + 1).padStart(2, '0');
+        const day = String(myDate.getDate()).padStart(2, '0');
+        const hours = String(myDate.getHours()).padStart(2, '0');
+        const minutes = String(myDate.getMinutes()).padStart(2, '0');
 
-    const formattedDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
-    console.log(formattedDateTime);
-    /* remove second/millisecond if needed - credit ref. https://stackoverflow.com/questions/24468518/html5-input-datetime-local-default-value-of-today-and-current-time#comment112871765_60884408 */
+        const formattedDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+        console.log(formattedDateTime);
+        /* remove second/millisecond if needed - credit ref. https://stackoverflow.com/questions/24468518/html5-input-datetime-local-default-value-of-today-and-current-time#comment112871765_60884408 */
 
-    document.getElementById('datetime').value = formattedDateTime;
-});
+        document.getElementById('datetime').value = formattedDateTime;
+    });
+}
+init();
 
