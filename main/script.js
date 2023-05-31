@@ -2,12 +2,27 @@ const url_b="http://localhost:8082/ofud/api/v1";
 
 const tabButtons = document.querySelectorAll('.tab-button');
 const tabContentPanes = document.querySelectorAll('.tab-content .tab-pane, .tab-pane2');
+let  fecha_s;
+const enviar_asis = document.getElementById('enviar_asistencia');
+const viaticos = document.getElementById('viaticos');
+const electivas = document.getElementById('electivas');
+/*Boton viaticos*/
+viaticos.addEventListener('click',async()=>{
+    url =url_b+'';
+    await fetch (url).then(response=>response.json())
+    
 
+})
+electivas.addEventListener('click',async ()=>{
+    url =url_b+'';
+    await fetch (url).then(response=>response.json())
+})
+
+/*Cambio de pestañas*/
 async function tabButtonsFunction(){
     let vali = await validacion_Calendario();
     let vali2= await validacion_seleccion();
-    let vali3=true;
-    let vali4=true;
+    
     for( const button of tabButtons) {
         if(button.classList.contains("calendario")){
             if(!vali){
@@ -28,26 +43,40 @@ async function tabButtonsFunction(){
             }
         }
         if(button.classList.contains("asistencia")){
-            if(!vali3){
-                button.addEventListener('click', () => {
-                    alert('pestaña inhabilitada');
-                 });    
-            }else{
+            button.addEventListener('click', async () => {
+                let vali3= await validacion_calendario_fecha();
                 cambiar_boton(button);
-            }
+                listAsistencia();
+                
+                if(Object.keys(vali3).length === 0){
+                        alert('pestaña inhabilitada');   
+                }else{
+                    cambiar_boton(button);
+                    listAsistencia();
+                    enviar_asis.addEventListener('click',async()=>{
+                        
+                        let codigo=codigos();
+                        insert_asistencia(codigo,vali3.consec,vali3.idObra);
+                    })
+                }
+             });      
+            
         }
         if(button.classList.contains("liquidacion")){
-            button.addEventListener('click', () => {
-                alert('pestaña inhabilitada');
-             });    
-            if(!vali4){
+            button.addEventListener('click', async() => {
                 
+            let vali4=await validar_liq(); 
+            if(vali4!=0){
+                alert('pestaña inhabilitada');
             }else{
                 cambiar_boton(button);
             }
+        });
         }
     }
 }
+
+
 
 function cambiar_boton(button){
     button.addEventListener('click', () => {
@@ -102,14 +131,37 @@ async function validacion_asistencia(){
     });
     return estado;
 }
+/*Validar calendario_fecha*/
+const validacion_calendario_fecha= async() => {
+   url=url_b+`/calendarios/ensayo?date=${fecha_s}`;
+   console.log(url)
+   let calen;
+     await fetch(url).then(response => response.json())
+     .then(data => {
+        calen=data;
+     })
+     .catch(error => {
+        console.log('Error en la solicitud:', error);
+    });
+    return calen;
+    }
+/*Validar liquidacion*/
+const validar_liq=async()=>{
 
-
+    url=url_b+`/calendarios/count?date=${fecha_s}`;
+    let count;
+    await fetch(url).then(response => response.json())
+    .then(data =>{
+        count=data.count;
+    })
+    return count;
+}
 /*Pone inactivo el calendaro*/
-function peticion_terminar(id) {
+async function peticion_terminar(id) {
     console.log(id);
-    url = url_b`/calendarios/terminar?${id}`;
+    url = url_b+`/calendarios/terminar?${id}`;
     console.log(url);
-    fetch(url, {
+    await fetch(url, {
         method: 'PUT'
     }).then(response => {
         if (response.ok) {
@@ -122,10 +174,59 @@ function peticion_terminar(id) {
             console.log('Error en la solicitud:', error);
         });
 }
+/*Insertar asistencias*/
+async function insert_asistencia(codsEstudiante,consec,idObra){
+
+    const data = {
+        codsEstudiante,
+        consec,
+        idObra
+    };
+    url = url_b+`/estudiantes/asistencia`;
+    await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(response => {
+        if (response.ok) {
+            console.log('Request completado exitosamente.');
+        } else {
+            console.log('Error en la solicitud.');
+        }
+    })
+        .catch(error => {
+            console.log('Error en la solicitud:', error);
+        });
+}
+function codigos(){
+        // Obtener la tabla
+    const tabla = document.getElementById('tabla_asistencia');
+
+    // Obtener todas las filas de la tabla
+    const filas = tabla.querySelectorAll('tbody tr');
+
+    // Recorrer las filas y verificar los checkboxes marcados
+    const codigosSeleccionados = [];
+    for (let i = 0; i < filas.length; i++) {
+        const fila = filas[i];
+        const checkbox = fila.querySelector('input[type="checkbox"][value="present"]');
+
+    // Verificar si el checkbox está marcado y tiene el valor "present"
+        if (checkbox && checkbox.checked) {
+            const codigo = fila.querySelector('td:first-child').textContent;
+            codigosSeleccionados.push(codigo);
+        }
+    }
+
+    return codigosSeleccionados;
+
+}
 /*Lista Calendarios*/
-const listCalendarios = () => {
+const listCalendarios = async () => {
     url = url_b+'/calendarios/';
-    fetch(url).then(response => response.json())
+    await fetch(url).then(response => response.json())
         .then(data => {
             let content = "";
             data.forEach((calendario) => {
@@ -172,6 +273,28 @@ const listSeleccion= async() => {
      Cuerpo_seleccion.innerHTML=content;
      })
 }
+const listAsistencia= async() => {
+    url=url_b+'/estudiantes/seleccionados';
+     await fetch(url).then(response => response.json())
+     .then(data => {
+        let content= "";
+        data.forEach((estudiantes)=>{
+        content+=
+        `<tr id="conte">
+        <td>${estudiantes.codigo}</td>
+        <td>${estudiantes.nombre}</td>
+        <td>${estudiantes.apellido}</td>
+        <td>${estudiantes.facultad}</td>
+        <td>${estudiantes.proyecto}</td>
+        <td>${estudiantes.instrumento}</td>
+        <td><input type="checkbox" class="cbox" value="present"></td>
+        </tr>`
+     });
+     Cuerpo_asistencia.innerHTML=content;
+     })
+}
+
+
 function init(){
     const nameElement = document.getElementById('name')
     nameElement.textContent = localStorage.getItem('name');
@@ -179,6 +302,7 @@ function init(){
     window.addEventListener('load', async () => {
         listCalendarios();
         listSeleccion();
+        
         const myDate = new Date(); // Aquí puedes reemplazarlo con tu propia fecha
 
         const year = myDate.getFullYear();
@@ -188,11 +312,29 @@ function init(){
         const minutes = String(myDate.getMinutes()).padStart(2, '0');
 
         const formattedDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
-        console.log(formattedDateTime);
+
         /* remove second/millisecond if needed - credit ref. https://stackoverflow.com/questions/24468518/html5-input-datetime-local-default-value-of-today-and-current-time#comment112871765_60884408 */
 
         document.getElementById('datetime').value = formattedDateTime;
     });
 }
-init();
+init()
+function fecha(){
+    const date= document.getElementById('datetime').value;
+    
+    const myDate = new Date(date) ; // Aquí puedes reemplazarlo con tu propia fecha
+
+    const year = myDate.getFullYear();
+    const month = String(myDate.getMonth() + 1).padStart(2, '0');
+    const day = String(myDate.getDate()).padStart(2, '0');
+    const hours = String(myDate.getHours()).padStart(2, '0');
+    const minutes = String(myDate.getMinutes()).padStart(2, '0');
+    const seconds = String(myDate.getSeconds()).padStart(2, '0');
+
+    fecha_s = `${year}-${month}-${day}%20${hours}:${minutes}:${seconds}`;
+}
+fecha()
+setInterval(fecha, 1000);
+
+
 

@@ -8,6 +8,7 @@
 </head>
 <body>
     <h2 id="name"></h2>
+    <form onsubmit=""></form>
     <input type="datetime-local" name="datetime" id="datetime">
     <div class="container">
         <div class="tabs">
@@ -61,9 +62,10 @@
                 </div>
                 
             </div>
-            <div class="tab-pane" data-tab="reporte-asistencia">
+            <div class="tab-pane" id="tabla_asistencia" data-tab="reporte-asistencia">
                 <div class="tab-content">
                     <div class="tab-pane2 active" data-tab="asistencia">
+                        <button id="enviar_asistencia"> Enviar asistencia</button>
                         <table id="tabla-seleccion">
                             <thead>
                                 <tr>
@@ -73,17 +75,19 @@
                                     <th>Facultad</th>
                                     <th>Proyecto</th>
                                     <th>Instrumento</th>
+                                    <th>Asistencia</th>
                                 </tr>
                             </thead>
                             <tbody id="Cuerpo_asistencia"> 
-                                <td><input type="checkbox" id="cbox" value="present"></td>
+                                
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
             <div class="tab-pane" data-tab="liquidacion-estudiantes">
-                Contenido de la pestaña "Liquidación Estudiantes"
+                <button id="viaticos">Viaticos estudiantes</button>
+                <button id="electivas">Electivas estudiantes</button>
             </div>
         </div>
     </div>
