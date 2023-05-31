@@ -8,14 +8,34 @@ const viaticos = document.getElementById('viaticos');
 const electivas = document.getElementById('electivas');
 /*Boton viaticos*/
 viaticos.addEventListener('click',async()=>{
-    url =url_b+'';
-    await fetch (url).then(response=>response.json())
+    url =url_b+'/pdf/generate';
+    await fetch (url).then(response=>response.blob())
+    .then(blob => {
+        // Crear un objeto URL a partir del blob
+        const url = URL.createObjectURL(blob);
+    
+        // Crear un enlace temporal para descargar el archivo
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'file.pdf';
+    
+        // Agregar el enlace al documento y hacer clic en él
+        document.body.appendChild(link);
+        link.click();
+    
+        // Limpiar el objeto URL y el enlace temporal
+        URL.revokeObjectURL(url);
+        document.body.removeChild(link);
+      })
+      .catch(error => {
+        console.error('Error al descargar el archivo PDF:', error);
+      });
     
 
 })
 electivas.addEventListener('click',async ()=>{
-    url =url_b+'';
-    await fetch (url).then(response=>response.json())
+    url =url_b+'/estudiantes/email';
+    await fetch (url)
 })
 
 /*Cambio de pestañas*/
